@@ -1,0 +1,38 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        "health"
+    ],
+    "companyName": "jjv360",
+    "enableMultiJS": true,
+    "longName": "InfoWatch",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "data/GenericFailed.pdc",
+                "name": "IMAGE_GENERIC_FAILED",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
+            {
+                "file": "data/GenericWarning.pdc",
+                "name": "IMAGE_GENERIC_WARNING",
+                "targetPlatforms": null,
+                "type": "raw"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "InfoWatch",
+    "targetPlatforms": [
+        "aplite",
+        "basalt",
+        "chalk"
+    ],
+    "uuid": "3cce646e-e33a-4fa1-a91e-75d8f20cdf0a",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": true
+    }
+}
