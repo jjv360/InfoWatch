@@ -1,6 +1,8 @@
 #include <pebble.h>
 #include "EventStore.h"
 #include "MathUtil.h"
+#include "Resources.h"
+#include "Watchface.h"
 
 #define KEY_NUM_EVENTS					0x100
 #define KEY_EVENTS_OFFSET				0x200
@@ -15,6 +17,7 @@
 #define MAX_EVENTS						32
 
 static Event* firstEvent;
+
 
 // Load events from storage
 void EventStore_Init() {
@@ -125,6 +128,9 @@ void EventStore_Remove(Event* event) {
 	// Free memory
 	free(event);
 	
+	// Update UI
+	Watchface_Refresh();
+	
 }
 
 // Remove the event with the specified ID
@@ -161,7 +167,7 @@ Event* EventStore_Create(char* name) {
 	event->eventID = id;
 	
 	// Copy event name
-	strncpy(event->name, name, 128);
+	strncpy(event->name, name, EVENT_STRING_LENGTH);
 	
 	// Set defaults
 	event->time = time(0);
@@ -202,6 +208,9 @@ void EventStore_Add(Event* event) {
 	
 	APP_LOG(APP_LOG_LEVEL_INFO, "Adding event with name: %s", event->name);
 	
+	// Update UI
+	Watchface_Refresh();
+	
 }
 
 // Count number of items in the event store
@@ -241,6 +250,8 @@ GColor EventStore_Color(int eventColor) {
 		return GColorBlue;
 	else if (eventColor == EVENT_COLOR_BROWN)
 		return GColorBrass;
+	else if (eventColor == EVENT_COLOR_YELLOW)
+		return GColorYellow;
 	else
 		return GColorWhite;
 	
@@ -300,7 +311,7 @@ void EventStore_CopyRelativeTimeText(const Event* event, char* bfr, int length) 
 	
 	// Check if inside event
 	time_t now = time(0);
-	if (now + 60 * 60 >= event->time && now <= event->time + event->duration) {
+	if (now + 60 * 60 >= event->time && now + 60 * 60 <= event->time + event->duration) {
 		
 		// Show ending time
 		int numHours = (event->time + event->duration - now) / 60 / 60;
@@ -316,7 +327,7 @@ void EventStore_CopyRelativeTimeText(const Event* event, char* bfr, int length) 
 		// Show ending time
 		int numMins = (event->time + event->duration - now) / 60;
 		if (numMins == 0)
-			snprintf(bfr, length, "Just ended");
+			snprintf(bfr, length, event->duration == 0 ? "Now" : "Just ended");
 		else if (numMins == 1)
 			snprintf(bfr, length, "Ends in one minute");
 		else
@@ -330,11 +341,11 @@ void EventStore_CopyRelativeTimeText(const Event* event, char* bfr, int length) 
 		// Show ended time
 		int numMins = (now - (event->time + event->duration)) / 60;
 		if (numMins == 0)
-			snprintf(bfr, length, "Just ended");
+			snprintf(bfr, length, event->duration == 0 ? "Now" : "Just ended");
 		else if (numMins == 1)
-			snprintf(bfr, length, "Ended one minute ago");
+			snprintf(bfr, length, "One minute ago");
 		else
-			snprintf(bfr, length, "Ended %i minutes ago", numMins);
+			snprintf(bfr, length, "%i minutes ago", numMins);
 		
 	}
 	
@@ -344,11 +355,11 @@ void EventStore_CopyRelativeTimeText(const Event* event, char* bfr, int length) 
 		// Show time
 		int numMins = ((event->time + event->duration) - now) / 60;
 		if (numMins == 0)
-			snprintf(bfr, length, "Just started");
+			snprintf(bfr, length, "Now");
 		else if (numMins == 1)
-			snprintf(bfr, length, "Starts in one minute");
+			snprintf(bfr, length, "In one minute");
 		else
-			snprintf(bfr, length, "Starts in %i minutes", numMins);
+			snprintf(bfr, length, "In %i minutes", numMins);
 		
 	} 
 	
@@ -358,9 +369,9 @@ void EventStore_CopyRelativeTimeText(const Event* event, char* bfr, int length) 
 		// Show time in hours
 		int numHours = ((event->time + event->duration) - now) / 60 / 60;
 		if (numHours == 1)
-			snprintf(bfr, length, "Starts in one hour");
+			snprintf(bfr, length, "In one hour");
 		else
-			snprintf(bfr, length, "Starts in %i hours", numHours);
+			snprintf(bfr, length, "In %i hours", numHours);
 		
 	}
 	
@@ -381,5 +392,66 @@ void EventStore_CopySubtitle(const Event* event, char* bfr, int length) {
 		strncpy(bfr, event->subtitle, length);
 		
 	}
+	
+}
+
+
+// Get image for event type
+GDrawCommandImage* EventStore_SmallIcon(Event* event) {
+	
+	// Find correct image
+	if (event -> type == EVENT_TYPE_WARNING)
+		return Resources.icons.warning;
+	else if (event -> type == EVENT_TYPE_FAILED)
+		return Resources.icons.failed;
+	else if (event -> type == EVENT_TYPE_CONFIRM)
+		return Resources.icons.confirmation;
+	else if (event -> type == EVENT_TYPE_PIN)
+		return Resources.icons.pin;
+	else if (event -> type == EVENT_TYPE_BATTERY)
+		return Resources.icons.battery;
+	else if (event -> type == EVENT_TYPE_BATTERY_CHARGING)
+		return Resources.icons.batteryCharging;
+	else if (event -> type == EVENT_TYPE_SENT)
+		return Resources.icons.sent;
+	else if (event -> type == EVENT_TYPE_SETTINGS)
+		return Resources.icons.settings;
+	else if (event -> type == EVENT_TYPE_EVENT)
+		return Resources.icons.event;
+	else
+		return Resources.icons.notification;
+	
+}
+
+
+
+// Draw the event in the specified area on-screen
+void EventStore_DrawEvent(Event* event, GContext* ctx, GRect bounds) {
+	
+	// Draw colored background
+	int boxSize = 28;
+	GColor color = EventStore_Color(event->color);
+	graphics_context_set_fill_color(ctx, color);
+	graphics_fill_rect(ctx, GRect(bounds.origin.x + bounds.size.w / 2 - boxSize / 2, bounds.origin.y + 25 / 2 - boxSize / 2, boxSize, boxSize), 4, GCornersAll);
+	
+	// Draw image
+	GDrawCommandImage* img = EventStore_SmallIcon(event);
+	int offset = bounds.origin.y;
+	gdraw_command_image_draw(ctx, img, GPoint(bounds.origin.x + bounds.size.w / 2 - 25 / 2, offset));
+	offset += 24;
+	
+	// Draw title
+	graphics_context_set_text_color(ctx, GColorWhite);
+	graphics_draw_text(ctx, event->name, Resources.fonts.eventTitle, GRect(bounds.origin.x, offset, bounds.size.w, 20), GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, 0);
+	offset += 18;
+	
+	// Get subtitle
+	char bfr[64];
+	EventStore_CopySubtitle(event, bfr, 64);
+	
+	// Draw subtitle
+	graphics_context_set_text_color(ctx, GColorLightGray);
+	graphics_draw_text(ctx, bfr, Resources.fonts.eventSubtitle, GRect(bounds.origin.x, offset, bounds.size.w, 20), GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, 0);
+	offset += 14;
 	
 }

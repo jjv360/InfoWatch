@@ -2,29 +2,20 @@
 #include "Watchface.h"
 #include "MathUtil.h"
 #include "EventStore.h"
+#include "Resources.h"
 
 static Window* window = 0;
 static char timeLblBuffer[128] = {0};
 
 static GColor backgroundColor = {0};
-static GFont timeFont = 0;
-static GFont eventFont = 0;
 static struct tm now = {0};
 
-static GDrawCommandImage* warningIcon = 0;
-static GDrawCommandImage* failedIcon = 0;
 
 // Set up the window
 void Watchface_Init() {
 	
 	// Set defaults
 	backgroundColor = GColorBlack;
-	timeFont = fonts_get_system_font(FONT_KEY_LECO_26_BOLD_NUMBERS_AM_PM);
-	eventFont = fonts_get_system_font(FONT_KEY_GOTHIC_14);
-	
-	// Load images
-	warningIcon = gdraw_command_image_create_with_resource(RESOURCE_ID_IMAGE_GENERIC_WARNING);
-	failedIcon = gdraw_command_image_create_with_resource(RESOURCE_ID_IMAGE_GENERIC_FAILED);
 	
 	// Create window
 	window = window_create();
@@ -73,6 +64,19 @@ void Watchface_OnTimeChanged(struct tm *tick_time, TimeUnits units_changed) {
 	
 	// Refresh the digital time
 	clock_copy_time_string(timeLblBuffer, 128);
+	
+	// Redraw the background
+	layer_mark_dirty(window_get_root_layer(window));
+	
+}
+
+
+// Update the watchface
+void Watchface_Refresh() {
+	
+	// Check if set up
+	if (!window)
+		return;
 	
 	// Redraw the background
 	layer_mark_dirty(window_get_root_layer(window));
@@ -139,6 +143,7 @@ void Watchface_DrawBackground(struct Layer *layer, GContext *ctx) {
 	int pointOffset = 4;
 	time_t ignoreAfter = time(0) + 60 * 60 * 11;
 	Event* e = EventStore_First();
+	bool didDrawEventDot = false;
 	while (e) {
 		
 		// Get event
@@ -163,66 +168,53 @@ void Watchface_DrawBackground(struct Layer *layer, GContext *ctx) {
 		// Draw icon
 		graphics_context_set_fill_color(ctx, EventStore_Color(event->color));
 		graphics_fill_rect(ctx, GRect(itemCenter.x - 3, itemCenter.y - 3, 6, 6), 2, GCornersAll);
+		didDrawEventDot = true;
 		
 	}
 	
-	// Find angle of minute hand line
-	int angle = (TRIG_MAX_ANGLE * now.tm_hour / 12) + (TRIG_MAX_ANGLE * now.tm_min / 60) / 12;
+	// Draw hour hand line if there are event dots drawn
+	if (didDrawEventDot) {
 	
-	// Find position of minute hand line
-	int lineLength = 10;
-	GPoint outerPoint = calculateBoxAngleIntersection(bounds, angle, 0);
-	GPoint innerPoint = calculateBoxAngleIntersection(GRect(bounds.origin.x + lineLength, bounds.origin.y + lineLength, bounds.size.w - lineLength*2, bounds.size.h - lineLength*2), angle, 0);
+		// Find angle of minute hand line
+		int angle = (TRIG_MAX_ANGLE * now.tm_hour / 12) + (TRIG_MAX_ANGLE * now.tm_min / 60) / 12;
 	
-	// Draw line
-	graphics_context_set_antialiased(ctx, true);
-	graphics_context_set_stroke_color(ctx, GColorRed);
-	graphics_context_set_stroke_width(ctx, 2);
-	graphics_draw_line(ctx, outerPoint, innerPoint);
+		// Find position of minute hand line
+		int lineLength = 15;
+		GPoint outerPoint = calculateBoxAngleIntersection(bounds, angle, 0);
+		GPoint innerPoint = calculateBoxAngleIntersection(GRect(bounds.origin.x + lineLength, bounds.origin.y + lineLength, bounds.size.w - lineLength*2, bounds.size.h - lineLength*2), angle, 0);
+	
+		// Draw line
+		graphics_context_set_antialiased(ctx, true);
+		graphics_context_set_stroke_color(ctx, GColorRed);
+		graphics_context_set_stroke_width(ctx, 2);
+		graphics_draw_line(ctx, outerPoint, innerPoint);
+		
+	}
 	
 	// Get next event
 	Event* currentEvent = EventStore_Current();
 	if (currentEvent) {
 		
-		// Check icon type
-		int iconWidth = 8;
-		if (currentEvent -> type == EVENT_TYPE_GENERIC) {
-			
-			// Draw colored dot
-			graphics_context_set_fill_color(ctx, EventStore_Color(currentEvent->color));
-			graphics_fill_rect(ctx, GRect(20, bounds.size.h / 2 / 2 - 20, 6, 6), 2, GCornersAll);
-			
-		} else if (currentEvent -> type == EVENT_TYPE_WARNING) {
-			
-			// Draw icon
-			iconWidth = 28 - 11;
-			gdraw_command_image_draw(ctx, warningIcon, GPoint(9, bounds.size.h / 2 / 2 - 20));
-			
-		} else if (currentEvent -> type == EVENT_TYPE_FAILED) {
-			
-			// Draw icon
-			iconWidth = 28 - 11;
-			gdraw_command_image_draw(ctx, failedIcon, GPoint(9, bounds.size.h / 2 / 2 - 20));
-			
-		}
+		// Draw event
+		EventStore_DrawEvent(currentEvent, ctx, GRect(15, 12, bounds.size.w - 30, bounds.size.h / 2 - 24));
+	
+	} else {
 		
-		// Draw title
-		graphics_context_set_text_color(ctx, GColorWhite);
-		graphics_draw_text(ctx, currentEvent->name, eventFont, GRect(20 + iconWidth, bounds.size.h / 2 / 2 - 20 - 6, bounds.size.w - 20 - iconWidth - 20, 20), GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft, 0);
+		// No event, get placeholder size
+		const char* bfr = "InfoWatch";
+		GSize textSize = graphics_text_layout_get_content_size(bfr, Resources.fonts.logo, bounds, GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter);
 		
-		// Draw time delay
-		graphics_context_set_text_color(ctx, GColorLightGray);
-		char bfr[64];
-		EventStore_CopySubtitle(currentEvent, bfr, 64);
-		graphics_draw_text(ctx, bfr, eventFont, GRect(20 + iconWidth, bounds.size.h / 2 / 2 - 9, bounds.size.w - 22 - 20 - iconWidth, 40), GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft, 0);
+		// Draw placeholder
+		graphics_context_set_text_color(ctx, GColorDarkGray);
+		graphics_draw_text(ctx, bfr, Resources.fonts.logo, GRect(0, bounds.size.h / 4 - textSize.h / 2, bounds.size.w, textSize.h), GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, 0);
 		
 	}
 	
 	// Get size of time text
-	GSize textSize = graphics_text_layout_get_content_size(timeLblBuffer, timeFont, bounds, GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft);
+	GSize textSize = graphics_text_layout_get_content_size(timeLblBuffer, Resources.fonts.time, bounds, GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft);
 	
 	// Draw time text
 	graphics_context_set_text_color(ctx, GColorWhite);
-	graphics_draw_text(ctx, timeLblBuffer, timeFont, GRect(bounds.size.w / 2 - textSize.w / 2, bounds.size.h / 2 - textSize.h / 2, textSize.w, textSize.h), GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft, 0);
+	graphics_draw_text(ctx, timeLblBuffer, Resources.fonts.time, GRect(bounds.size.w / 2 - textSize.w / 2, bounds.size.h / 2 - textSize.h / 2, textSize.w, textSize.h), GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft, 0);
 	
 }

@@ -1,20 +1,30 @@
 #pragma once
 #include <pebble.h>
 
-#define EVENT_COLOR_WHITE		1
-#define EVENT_COLOR_GREEN		2
-#define EVENT_COLOR_RED			3
-#define EVENT_COLOR_BLUE		4
-#define EVENT_COLOR_BROWN		5
+#define EVENT_COLOR_WHITE				1
+#define EVENT_COLOR_GREEN				2
+#define EVENT_COLOR_RED					3
+#define EVENT_COLOR_BLUE				4
+#define EVENT_COLOR_BROWN				5
+#define EVENT_COLOR_YELLOW				6
 
-#define EVENT_TYPE_GENERIC		0
-#define EVENT_TYPE_WARNING		1
-#define EVENT_TYPE_FAILED		2
+#define EVENT_TYPE_GENERIC				0
+#define EVENT_TYPE_WARNING				1
+#define EVENT_TYPE_FAILED				2
+#define EVENT_TYPE_CONFIRM				3
+#define EVENT_TYPE_PIN					4
+#define EVENT_TYPE_BATTERY				5
+#define EVENT_TYPE_BATTERY_CHARGING		6
+#define EVENT_TYPE_SENT					7
+#define EVENT_TYPE_SETTINGS				8
+#define EVENT_TYPE_EVENT				9
+
+#define EVENT_STRING_LENGTH				64
 
 typedef struct {
 	int eventID;
-	char name[128];
-	char subtitle[128];
+	char name[EVENT_STRING_LENGTH];
+	char subtitle[EVENT_STRING_LENGTH];
 	time_t time;
 	time_t duration;
 	int color;
@@ -41,3 +51,5 @@ Event*	EventStore_Current();
 GColor 	EventStore_Color(int eventColor);
 void 	EventStore_CopyRelativeTimeText(const Event* event, char* bfr, int length);
 void	EventStore_CopySubtitle(const Event* event, char* bfr, int length);
+
+void 	EventStore_DrawEvent(Event* event, GContext* ctx, GRect bounds);

@@ -3,6 +3,7 @@
 
 void Watchface_Init();
 void Watchface_Show();
+void Watchface_Refresh();
 void Watchface_DeInit();
 
 void Watchface_OnTimeChanged(struct tm *tick_time, TimeUnits units_changed);

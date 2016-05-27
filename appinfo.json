@@ -10,6 +10,54 @@
     "resources": {
         "media": [
             {
+                "file": "data/ScheduledEvent.pdc",
+                "name": "IMAGE_EVENT",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
+            {
+                "file": "data/Settings.pdc",
+                "name": "IMAGE_SETTINGS",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
+            {
+                "file": "data/Sent.pdc",
+                "name": "IMAGE_SENT",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
+            {
+                "file": "data/BatteryCharging.pdc",
+                "name": "IMAGE_BATTERY_CHARGING",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
+            {
+                "file": "data/Battery.pdc",
+                "name": "IMAGE_BATTERY",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
+            {
+                "file": "data/GenericPin.pdc",
+                "name": "IMAGE_GENERIC_PIN",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
+            {
+                "file": "data/GenericConfirmation.pdc",
+                "name": "IMAGE_GENERIC_CONFIRMATION",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
+            {
+                "file": "data/GenericNotification.pdc",
+                "name": "IMAGE_GENERIC_NOTIFICATION",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
+            {
                 "file": "data/GenericFailed.pdc",
                 "name": "IMAGE_GENERIC_FAILED",
                 "targetPlatforms": null,
