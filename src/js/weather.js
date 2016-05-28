@@ -1,65 +1,97 @@
-var Location = require("location.js");
-var Request = require("request.js");
-
-// Vars
-var OpenWeatherMapAppID = "5e0f44fd8666d5fc8c2ad33651664696";
+var Location = require("location");
+var Request = require("request");
+var Settings = require("settings");
 
 /** Get the weather */
-module.exports.get = function() {
+module.exports.get = function(location) {
+	
+	// Check if got location
+	if (location) {
+		
+		// Use this location
+		return getWeatherIn(location);
+		
+	}
 	
 	// Get GPS location
 	return Location.get().then(function(location) {
 		
-		// Get the current weather
-		console.log("Getting weather...");
-		return Request.getJSON("http://api.openweathermap.org/data/2.5/weather?units=metric&lat=" + location.coords.latitude + "&lon=" + location.coords.longitude + "&appid=" + OpenWeatherMapAppID).then(function(currentWeather) {
-			
-			// Get weather data for these coordinates
-			return Request.getJSON("http://api.openweathermap.org/data/2.5/forecast?units=metric&lat=" + location.coords.latitude + "&lon=" + location.coords.longitude + "&appid=" + OpenWeatherMapAppID).then(function(weather) {
-
-				// Create info
-				var info = {};
-				info.coords = location.coords;
-				info.city = weather.city;
-				info.predictions = [];
-				
-				// Add first prediction, the current weather
-				if (currentWeather)
-					weather.list.unshift(currentWeather);
-
-				// Make weather results into a nice format
-				weather.list.forEach(function(p) {
-
-					// Create prediction
-					var pred = new WeatherPrediction();
-					pred.time = p.dt * 1000;
-					pred.weatherID = p.weather.id;
-					pred.temperature = p.main.temp;
-					pred.temperatureMin = p.main.temp_min;
-					pred.temperatureMax = p.main.temp_max;
-					pred.name = p.weather.main;
-					pred.description = p.weather.description;
-					pred.iconURL = "https://openweathermap.org/img/w/" + p.weather.icon + ".png";
-					info.predictions.push(pred);
-
-				});
-
-				// Make sure predictions are sorted by date
-				info.predictions.sort(function(a, b) {
-					return a.time - b.time;
-				});
-
-				// Done
-				console.log("Got weather");
-				return info;
-				
-			});
-			
-		});
+		// Get weather in these coordinates
+		return getWeatherIn(null, location.coords.latitude, location.coords.longitude);
 			
 	});
 	
 };
+
+/** @private Get weather in a location or a latitude+longitude */
+function getWeatherIn(location, latitude, longitude) {
+	
+	// Get API key
+	var APIKey = Settings.getSetting("openweathermap-api-key") || "5e0f44fd8666d5fc8c2ad33651664696";
+	
+	// Choose URL
+	var currentURL, forecastURL;
+	if (location) {
+		currentURL = "http://api.openweathermap.org/data/2.5/weather?units=metric&q=" + encodeURIComponent(location) + "&appid=" + APIKey;
+		forecastURL = "http://api.openweathermap.org/data/2.5/forecast?units=metric&q=" + encodeURIComponent(location) + "&appid=" + APIKey;
+	} else {
+		currentURL = "http://api.openweathermap.org/data/2.5/weather?units=metric&lat=" + latitude + "&lon=" + longitude + "&appid=" + APIKey;
+		forecastURL = "http://api.openweathermap.org/data/2.5/forecast?units=metric&lat=" + latitude + "&lon=" + longitude + "&appid=" + APIKey;
+	}
+	
+		
+	// Get the current weather
+	console.log("Getting weather...");
+	return Request.getJSON(currentURL).then(function(currentWeather) {
+
+		// Get weather data for these coordinates
+		return Request.getJSON(forecastURL).then(function(weather) {
+
+			// Create info
+			var info = {};
+			info.coords = location && location.coords;
+			info.city = weather.city;
+			info.predictions = [];
+
+			// Add first prediction, the current weather
+			if (currentWeather)
+				weather.list.unshift(currentWeather);
+
+			// Make weather results into a nice format
+			weather.list.forEach(function(p) {
+				
+				// Skip if not enough weather info
+				if (!p.weather || !p.weather.length)
+					return;
+
+				// Create prediction
+				var pred = new WeatherPrediction();
+				pred.time = p.dt * 1000;
+				pred.weatherID = p.weather[0].id;
+				pred.temperature = p.main.temp;
+				pred.temperatureMin = p.main.temp_min;
+				pred.temperatureMax = p.main.temp_max;
+				pred.name = p.weather[0].main;
+				pred.description = p.weather[0].description;
+				pred.iconURL = "https://openweathermap.org/img/w/" + p.weather[0].icon + ".png";
+				info.predictions.push(pred);
+
+			});
+
+			// Make sure predictions are sorted by date
+			info.predictions.sort(function(a, b) {
+				return a.time - b.time;
+			});
+
+			// Done
+			console.log("Got weather");
+			return info;
+
+		});
+
+	});
+	
+}
 
 
 /** Weather predictions */

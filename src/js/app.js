@@ -1,5 +1,6 @@
-var Weather = require("weather.js");
-var EventStore = require("event-store.js");
+var Weather = require("weather");
+var EventStore = require("event-store");
+var Settings = require("settings");
 
 // App startup
 Pebble.addEventListener("ready", function() {
@@ -9,13 +10,33 @@ Pebble.addEventListener("ready", function() {
 	
 });
 
+// When settings page is saved
+Settings.onUpdated = function() {
+	
+	// Refresh stuff
+	checkWeather();
+	
+};
+
 
 /** Checks the weather */
 var EVENT_WEATHER = 0x03;
 function checkWeather() {
 	
+	// Check if enabled
+	if (!Settings.getSetting("weather-enabled")) {
+		
+		// Remove old weather event
+		EventStore.removeID(EVENT_WEATHER);
+		return;
+		
+	}
+	
+	// Get weather location setting
+	var location = Settings.getSetting("weather-location");
+	
 	// Get weather
-	Weather.get().then(function(weather) {
+	Weather.get(location).then(function(weather) {
 		
 		// Remove old weather event
 		EventStore.removeID(EVENT_WEATHER);

@@ -13,6 +13,7 @@
     },
     "capabilities": [
         "location",
+        "configurable",
         "health"
     ],
     "companyName": "jjv360",

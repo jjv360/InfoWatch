@@ -15,7 +15,7 @@
 #define KEY_OFFSET_EVENT_DURATION		0x04
 #define KEY_OFFSET_EVENT_SUBTITLE		0x05
 
-#define MAX_EVENTS						32
+#define MAX_EVENTS						40
 
 static Event* firstEvent;
 
@@ -188,6 +188,10 @@ void EventStore_Add(Event* event) {
 	// Remove other events with this event ID
 	EventStore_RemoveID(event->eventID);
 	
+	// Check if we have space
+	if (EventStore_Count() >= MAX_EVENTS)
+		return;
+	
 	// Get last event
 	Event* lastEvent = firstEvent;
 	while (lastEvent && lastEvent->_next)
@@ -264,7 +268,7 @@ Event* EventStore_Current() {
 	// Go through events to get the current one
 	Event* closestEvent = 0;
 	time_t now = time(0);
-	time_t limit = now + 60 * 60 * 6;
+	time_t limit = now + 60 * 60 * 24 * 31;
 	Event* e = firstEvent;
 	while (e) {
 		
@@ -364,26 +368,45 @@ void EventStore_CopyRelativeTimeText(const Event* event, char* bfr, int length) 
 	// Check if in the next hour
 	else if (now + 60 * 60 >= event->time) {
 		
-		// Show time
-		int numMins = ((event->time) - now) / 60;
-		if (numMins == 0)
-			snprintf(bfr, length, "Now");
-		else if (numMins == 1)
-			snprintf(bfr, length, "In one minute");
-		else
-			snprintf(bfr, length, "In %i minutes", numMins);
+		
 		
 	} 
 	
 	// It starts in over an hour
 	else {
 		
-		// Show time in hours
-		int numHours = ((event->time) - now) / 60 / 60;
-		if (numHours == 1)
-			snprintf(bfr, length, "In one hour");
-		else
-			snprintf(bfr, length, "In %i hours", numHours);
+		// Get delay
+		int delay = (event->time) - now;
+		if (delay < 60 * 60) {
+			
+			// Show time
+			int numMins = delay / 60;
+			if (numMins == 0)
+				snprintf(bfr, length, "Now");
+			else if (numMins == 1)
+				snprintf(bfr, length, "In one minute");
+			else
+				snprintf(bfr, length, "In %i minutes", numMins);
+			
+		} else if (delay < 60 * 60 * 24) {
+			
+			// Show time in hours
+			int numHours = ((event->time) - now) / 60 / 60;
+			if (numHours == 1)
+				snprintf(bfr, length, "In one hour");
+			else
+				snprintf(bfr, length, "In %i hours", numHours);
+			
+		} else {
+		
+			// Show time in days
+			int numDays = ((event->time) - now) / 60 / 60 / 24;
+			if (numDays == 1)
+				snprintf(bfr, length, "In one day");
+			else
+				snprintf(bfr, length, "In %i days", numDays);
+			
+		}
 		
 	}
 	
