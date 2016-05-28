@@ -124,6 +124,17 @@ GPoint calculateBoxAngleIntersection(GRect box, int angle, int granularity) {
 	
 }
 
+// Calculate a point on a circle
+GPoint calculatePointOnCircle(GPoint center, int angle, int radius) {
+	
+	// Calculate new line point
+	GPoint p;
+	p.x = sin_lookup(angle) * radius / TRIG_MAX_RATIO + center.x;
+	p.y = -cos_lookup(angle) * radius / TRIG_MAX_RATIO + center.y;
+	return p;
+	
+}
+
 
 
 // Called to draw the background of the window
@@ -163,8 +174,18 @@ void Watchface_DrawBackground(struct Layer *layer, GContext *ctx) {
 		struct tm* time = localtime(&event->time);
 		int angle = (TRIG_MAX_ANGLE * time->tm_hour / 12) + (TRIG_MAX_ANGLE * time->tm_min / 60) / 12;
 		
-		// Find center point of item's circle
-		GPoint itemCenter = calculateBoxAngleIntersection(GRect(bounds.origin.x + pointOffset, bounds.origin.y + pointOffset, bounds.size.w - pointOffset*2, bounds.size.h - pointOffset*2), angle, 0);
+		// Check if using a round screen
+		#ifdef PBL_ROUND
+			
+			// Find center point of item's circle
+			GPoint itemCenter = calculatePointOnCircle(GPoint(bounds.size.w / 2, bounds.size.h / 2), angle, MIN(bounds.size.w, bounds.size.h) / 2 - pointOffset);
+			
+		#else
+		
+			// Find center point of item's circle
+			GPoint itemCenter = calculateBoxAngleIntersection(GRect(bounds.origin.x + pointOffset, bounds.origin.y + pointOffset, bounds.size.w - pointOffset*2, bounds.size.h - pointOffset*2), angle, 0);
+
+		#endif
 		
 		// Draw icon
 		graphics_context_set_fill_color(ctx, EventStore_Color(event->color));
@@ -186,11 +207,24 @@ void Watchface_DrawBackground(struct Layer *layer, GContext *ctx) {
 		// Find angle of minute hand line
 		int angle = (TRIG_MAX_ANGLE * now.tm_hour / 12) + (TRIG_MAX_ANGLE * now.tm_min / 60) / 12;
 	
-		// Find position of minute hand line
+		// Get line length
 		int lineLength = 15;
-		GPoint outerPoint = calculateBoxAngleIntersection(bounds, angle, 0);
-		GPoint innerPoint = calculateBoxAngleIntersection(GRect(bounds.origin.x + lineLength, bounds.origin.y + lineLength, bounds.size.w - lineLength*2, bounds.size.h - lineLength*2), angle, 0);
+		
+		// Check if using a round screen
+		#ifdef PBL_ROUND
+		
+			// Find position of minute hand line
+			GPoint outerPoint = calculatePointOnCircle(GPoint(bounds.size.w / 2, bounds.size.h / 2), angle, MIN(bounds.size.w, bounds.size.h) / 2);
+			GPoint innerPoint = calculatePointOnCircle(GPoint(bounds.size.w / 2, bounds.size.h / 2), angle, MIN(bounds.size.w, bounds.size.h) / 2 - lineLength);
 	
+		#else
+			
+			// Find position of minute hand line
+			GPoint outerPoint = calculateBoxAngleIntersection(bounds, angle, 0);
+			GPoint innerPoint = calculateBoxAngleIntersection(GRect(bounds.origin.x + lineLength, bounds.origin.y + lineLength, bounds.size.w - lineLength*2, bounds.size.h - lineLength*2), angle, 0);
+			
+		#endif
+		
 		// Draw line
 		graphics_context_set_antialiased(ctx, true);
 		graphics_context_set_stroke_width(ctx, 2);
