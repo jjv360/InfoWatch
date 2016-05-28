@@ -24,6 +24,10 @@ struct _Resources {
 		GDrawCommandImage* sent;
 		GDrawCommandImage* settings;
 		GDrawCommandImage* event;
+		GDrawCommandImage* rain;
+		GDrawCommandImage* snow;
+		GDrawCommandImage* cloudy;
+		GDrawCommandImage* wind;
 	} icons;
 	
 };

@@ -18,6 +18,10 @@
 #define EVENT_TYPE_SENT					7
 #define EVENT_TYPE_SETTINGS				8
 #define EVENT_TYPE_EVENT				9
+#define EVENT_TYPE_RAIN					10
+#define EVENT_TYPE_SNOW					11
+#define EVENT_TYPE_CLOUDY				12
+#define EVENT_TYPE_WIND					13
 
 #define EVENT_STRING_LENGTH				64
 

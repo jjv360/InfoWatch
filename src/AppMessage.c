@@ -1,0 +1,95 @@
+#include <pebble.h>
+#include "AppMessage.h"
+#include "EventStore.h"
+
+#define DICT_KEY_ACTION		0
+#define DICT_KEY_EVENTID	1
+#define DICT_KEY_TIME		2
+#define DICT_KEY_COLOR		3
+#define DICT_KEY_TYPE		4
+#define DICT_KEY_HIDDEN		5
+#define DICT_KEY_NOSAVE		6
+#define DICT_KEY_NAME		7
+#define DICT_KEY_SUBTITLE	8
+#define DICT_KEY_DURATION	9
+
+#define ACTION_REMOVE_ID	0
+#define ACTION_ADD_EVENT	1
+
+void AppMessage_Init() {
+	
+	// Connect to app message service
+	app_message_register_inbox_received(AppMessage_OnIncomingMessage);
+	app_message_open(app_message_inbox_size_maximum(), APP_MESSAGE_OUTBOX_SIZE_MINIMUM);
+	
+}
+
+/** Called when a new message is received from the phone */
+void AppMessage_OnIncomingMessage(DictionaryIterator* iterator, void *context) {
+	
+	// Get action
+	Tuple* tuple = dict_find(iterator, DICT_KEY_ACTION);
+	int action = (tuple ? tuple->value->int32 : -1);
+	
+	// Check what to do
+	if (action == ACTION_REMOVE_ID) {
+		
+		// Get event ID to remove
+		tuple = dict_find(iterator, DICT_KEY_EVENTID);
+		int id = (tuple ? tuple->value->int32 : -1);
+		
+		// Remove it
+		EventStore_RemoveID(id);
+		
+	} else if (action == ACTION_ADD_EVENT) {
+		
+		// Get event ID
+		tuple = dict_find(iterator, DICT_KEY_EVENTID);
+		int id = (tuple ? tuple->value->int32 : -1);
+		if (!tuple)
+			return;
+		
+		// Create event
+		Event* event = EventStore_Create("Untitled Event");
+		event->eventID = id;
+		
+		// Get time
+		tuple = dict_find(iterator, DICT_KEY_TIME);
+		event->time = (tuple ? tuple->value->uint32 : 0);
+		
+		// Get color
+		tuple = dict_find(iterator, DICT_KEY_COLOR);
+		event->color = (tuple ? tuple->value->uint32 : 0);
+		
+		// Get type
+		tuple = dict_find(iterator, DICT_KEY_TYPE);
+		event->type = (tuple ? tuple->value->uint32 : 0);
+		
+		// Get hidden
+		tuple = dict_find(iterator, DICT_KEY_HIDDEN);
+		event->hidden = (tuple ? tuple->value->uint32 : 0);
+		
+		// Get noSave
+		tuple = dict_find(iterator, DICT_KEY_NOSAVE);
+		event->noSave = (tuple ? tuple->value->uint32 : 0);
+		
+		// Get name
+		tuple = dict_find(iterator, DICT_KEY_NAME);
+		if (tuple && strlen(tuple->value->cstring) > 0)
+			strncpy(event->name, tuple->value->cstring, EVENT_STRING_LENGTH);
+		
+		// Get subtitle
+		tuple = dict_find(iterator, DICT_KEY_SUBTITLE);
+		if (tuple && strlen(tuple->value->cstring) > 0)
+			strncpy(event->subtitle, tuple->value->cstring, EVENT_STRING_LENGTH);
+		
+		// Get duration
+		tuple = dict_find(iterator, DICT_KEY_DURATION);
+		event->duration = (tuple ? tuple->value->uint32 : 0);
+		
+		// Add event
+		EventStore_Add(event);
+		
+	}
+	
+}

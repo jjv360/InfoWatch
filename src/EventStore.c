@@ -3,6 +3,7 @@
 #include "MathUtil.h"
 #include "Resources.h"
 #include "Watchface.h"
+#include <math.h>
 
 #define KEY_NUM_EVENTS					0x100
 #define KEY_EVENTS_OFFSET				0x200
@@ -206,7 +207,7 @@ void EventStore_Add(Event* event) {
 		
 	}
 	
-	APP_LOG(APP_LOG_LEVEL_INFO, "Adding event with name: %s", event->name);
+	APP_LOG(APP_LOG_LEVEL_INFO, "Adding event %s at %u", event->name, (unsigned int) event->time);
 	
 	// Update UI
 	Watchface_Refresh();
@@ -311,10 +312,21 @@ void EventStore_CopyRelativeTimeText(const Event* event, char* bfr, int length) 
 	
 	// Check if inside event
 	time_t now = time(0);
-	if (now + 60 * 60 >= event->time && now + 60 * 60 <= event->time + event->duration) {
+	if (now + 60 * 60 * 24 >= event->time && now + 60 * 60 * 24 <= event->time + event->duration) {
 		
 		// Show ending time
-		int numHours = (event->time + event->duration - now) / 60 / 60;
+		int numDays = round(((double) event->time + event->duration - now) / 60 / 60 / 24);
+		if (numDays == 1)
+			snprintf(bfr, length, "Ends in one day");
+		else
+			snprintf(bfr, length, "Ends in %i days", numDays);
+		
+	}
+	
+	else if (now + 60 * 60 >= event->time && now + 60 * 60 <= event->time + event->duration) {
+		
+		// Show ending time
+		int numHours = round(((double)event->time + event->duration - now) / 60 / 60);
 		if (numHours == 1)
 			snprintf(bfr, length, "Ends in one hour");
 		else
@@ -325,7 +337,7 @@ void EventStore_CopyRelativeTimeText(const Event* event, char* bfr, int length) 
 	else if (now >= event->time && now <= event->time + event->duration) {
 		
 		// Show ending time
-		int numMins = (event->time + event->duration - now) / 60;
+		int numMins = round(((double) event->time + event->duration - now) / 60);
 		if (numMins == 0)
 			snprintf(bfr, length, event->duration == 0 ? "Now" : "Just ended");
 		else if (numMins == 1)
@@ -353,7 +365,7 @@ void EventStore_CopyRelativeTimeText(const Event* event, char* bfr, int length) 
 	else if (now + 60 * 60 >= event->time) {
 		
 		// Show time
-		int numMins = ((event->time + event->duration) - now) / 60;
+		int numMins = ((event->time) - now) / 60;
 		if (numMins == 0)
 			snprintf(bfr, length, "Now");
 		else if (numMins == 1)
@@ -367,7 +379,7 @@ void EventStore_CopyRelativeTimeText(const Event* event, char* bfr, int length) 
 	else {
 		
 		// Show time in hours
-		int numHours = ((event->time + event->duration) - now) / 60 / 60;
+		int numHours = ((event->time) - now) / 60 / 60;
 		if (numHours == 1)
 			snprintf(bfr, length, "In one hour");
 		else
@@ -418,6 +430,14 @@ GDrawCommandImage* EventStore_SmallIcon(Event* event) {
 		return Resources.icons.settings;
 	else if (event -> type == EVENT_TYPE_EVENT)
 		return Resources.icons.event;
+	else if (event -> type == EVENT_TYPE_RAIN)
+		return Resources.icons.rain;
+	else if (event -> type == EVENT_TYPE_SNOW)
+		return Resources.icons.snow;
+	else if (event -> type == EVENT_TYPE_CLOUDY)
+		return Resources.icons.cloudy;
+	else if (event -> type == EVENT_TYPE_WIND)
+		return Resources.icons.wind;
 	else
 		return Resources.icons.notification;
 	

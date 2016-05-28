@@ -4,6 +4,7 @@
 #include "BatteryEvents.h"
 #include "Resources.h"
 #include "BluetoothEvents.h"
+#include "AppMessage.h"
 
 // Main app entry point
 int main() {
@@ -21,6 +22,9 @@ int main() {
 	// Load event monitor services
 	BatteryEvents_Init();
 	BluetoothEvents_Init();
+	
+	// Start connection to phone
+	AppMessage_Init();
 	
 	// Show window
 	Watchface_Show();

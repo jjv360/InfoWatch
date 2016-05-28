@@ -22,5 +22,9 @@ void Resources_Init() {
 	Resources.icons.sent = gdraw_command_image_create_with_resource(RESOURCE_ID_IMAGE_SENT);
 	Resources.icons.settings = gdraw_command_image_create_with_resource(RESOURCE_ID_IMAGE_SETTINGS);
 	Resources.icons.event = gdraw_command_image_create_with_resource(RESOURCE_ID_IMAGE_EVENT);
+	Resources.icons.rain = gdraw_command_image_create_with_resource(RESOURCE_ID_IMAGE_RAIN);
+	Resources.icons.snow = gdraw_command_image_create_with_resource(RESOURCE_ID_IMAGE_SNOW);
+	Resources.icons.cloudy = gdraw_command_image_create_with_resource(RESOURCE_ID_IMAGE_CLOUDY);
+	Resources.icons.wind = gdraw_command_image_create_with_resource(RESOURCE_ID_IMAGE_WIND);
 	
 }

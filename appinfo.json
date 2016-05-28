@@ -1,6 +1,18 @@
 {
-    "appKeys": {},
+    "appKeys": {
+        "action": 0,
+        "color": 3,
+        "duration": 9,
+        "eventID": 1,
+        "hidden": 5,
+        "name": 7,
+        "noSave": 6,
+        "subtitle": 8,
+        "time": 2,
+        "type": 4
+    },
     "capabilities": [
+        "location",
         "health"
     ],
     "companyName": "jjv360",
@@ -9,6 +21,30 @@
     "projectType": "native",
     "resources": {
         "media": [
+            {
+                "file": "data/Wind.pdc",
+                "name": "IMAGE_WIND",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
+            {
+                "file": "data/Cloudy.pdc",
+                "name": "IMAGE_CLOUDY",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
+            {
+                "file": "data/Snow.pdc",
+                "name": "IMAGE_SNOW",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
+            {
+                "file": "data/Rain.pdc",
+                "name": "IMAGE_RAIN",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
             {
                 "file": "data/ScheduledEvent.pdc",
                 "name": "IMAGE_EVENT",
@@ -78,7 +114,7 @@
         "basalt",
         "chalk"
     ],
-    "uuid": "3cce646e-e33a-4fa1-a91e-75d8f20cdf0a",
+    "uuid": "0026e0e3-5b51-4e24-91f5-bf5f88f3e8e4",
     "versionLabel": "1.0",
     "watchapp": {
         "watchface": true

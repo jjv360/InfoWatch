@@ -141,6 +141,7 @@ void Watchface_DrawBackground(struct Layer *layer, GContext *ctx) {
 	
 	// Draw events around the circle
 	int pointOffset = 4;
+	time_t ignoreBefore = time(0) - 60 * 10;
 	time_t ignoreAfter = time(0) + 60 * 60 * 11;
 	Event* e = EventStore_First();
 	bool didDrawEventDot = false;
@@ -155,7 +156,7 @@ void Watchface_DrawBackground(struct Layer *layer, GContext *ctx) {
 			continue;
 		
 		// Ignore if not within range
-		if (event->time > ignoreAfter)
+		if (event->time < ignoreBefore || event->time > ignoreAfter)
 			continue;
 		
 		// Find angle for this item's time
