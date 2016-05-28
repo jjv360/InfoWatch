@@ -9,6 +9,7 @@ struct _Resources {
 		GFont eventTitle;
 		GFont eventSubtitle;
 		GFont logo;
+		GFont dayOfMonth;
 	} fonts;
 	
 	// Icons

@@ -258,4 +258,72 @@ void Watchface_DrawBackground(struct Layer *layer, GContext *ctx) {
 	graphics_context_set_text_color(ctx, GColorWhite);
 	graphics_draw_text(ctx, timeLblBuffer, Resources.fonts.time, GRect(bounds.size.w / 2 - textSize.w / 2, bounds.size.h / 2 - textSize.h / 2, textSize.w, textSize.h), GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft, 0);
 	
+	// Get day of week
+	char* dayName = "-";
+	if (now.tm_wday == 0)
+		dayName = "Sunday";
+	if (now.tm_wday == 1)
+		dayName = "Monday";
+	if (now.tm_wday == 2)
+		dayName = "Tuesday";
+	if (now.tm_wday == 3)
+		dayName = "Wednesday";
+	if (now.tm_wday == 4)
+		dayName = "Thursday";
+	if (now.tm_wday == 5)
+		dayName = "Friday";
+	if (now.tm_wday == 6)
+		dayName = "Saturday";
+	
+	// Get month name
+	char* monthName = "-";
+	if (now.tm_mon == 0)
+		monthName = "January";
+	if (now.tm_mon == 1)
+		monthName = "February";
+	if (now.tm_mon == 2)
+		monthName = "March";
+	if (now.tm_mon == 3)
+		monthName = "April";
+	if (now.tm_mon == 4)
+		monthName = "May";
+	if (now.tm_mon == 5)
+		monthName = "June";
+	if (now.tm_mon == 6)
+		monthName = "July";
+	if (now.tm_mon == 7)
+		monthName = "August";
+	if (now.tm_mon == 8)
+		monthName = "September";
+	if (now.tm_mon == 9)
+		monthName = "October";
+	if (now.tm_mon == 10)
+		monthName = "November";
+	if (now.tm_mon == 11)
+		monthName = "December";
+	
+	// Draw month name and year
+	char bfr2[32];
+	snprintf(bfr2, 32, "%s %i", monthName, 1900 + now.tm_year);
+	
+	// Get day info width
+	GSize upperSize = graphics_text_layout_get_content_size(dayName, Resources.fonts.eventSubtitle, GRect(0, 0, 100, 100), GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft);
+	GSize lowerSize = graphics_text_layout_get_content_size(bfr2, Resources.fonts.eventSubtitle, GRect(0, 0, 100, 100), GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft);
+	int dayInfoWidth = 25 + MAX(upperSize.w, lowerSize.w);
+	
+	// Draw day of month
+	char bfr[32];
+	snprintf(bfr, 32, "%02i", now.tm_mday);
+	graphics_context_set_text_color(ctx, COLOR_FALLBACK(GColorLightGray, GColorWhite));
+	graphics_draw_text(ctx, bfr, Resources.fonts.dayOfMonth, GRect(bounds.size.w / 2 - dayInfoWidth / 2, bounds.size.h / 2 + bounds.size.h / 4 - 40 / 2, 100, 40), GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft, 0);
+	
+	// Draw day of week
+	graphics_context_set_text_color(ctx, COLOR_FALLBACK(GColorDarkGray, GColorWhite));
+	graphics_draw_text(ctx, dayName, Resources.fonts.eventSubtitle, GRect(bounds.size.w / 2 - dayInfoWidth / 2 + 25, bounds.size.h / 2 + bounds.size.h / 4 - 40 / 2 + 3, 100, 40), GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft, 0);
+	
+	// Draw month name and year
+	graphics_context_set_text_color(ctx, COLOR_FALLBACK(GColorDarkGray, GColorWhite));
+	graphics_draw_text(ctx, bfr2, Resources.fonts.eventSubtitle, GRect(bounds.size.w / 2 - dayInfoWidth / 2 + 25, bounds.size.h / 2 + bounds.size.h / 4 - 40 / 2 + 16, 100, 40), GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft, 0);
+	
+	
 }

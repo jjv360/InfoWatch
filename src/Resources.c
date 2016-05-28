@@ -10,6 +10,7 @@ void Resources_Init() {
 	Resources.fonts.eventTitle = fonts_get_system_font(FONT_KEY_GOTHIC_18);
 	Resources.fonts.eventSubtitle = fonts_get_system_font(FONT_KEY_GOTHIC_14);
 	Resources.fonts.logo = fonts_get_system_font(FONT_KEY_GOTHIC_14);
+	Resources.fonts.dayOfMonth = fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD);
 	
 	// Load images
 	Resources.icons.notification = gdraw_command_image_create_with_resource(RESOURCE_ID_IMAGE_GENERIC_NOTIFICATION);

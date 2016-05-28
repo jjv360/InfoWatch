@@ -16,12 +16,12 @@ int main() {
 	EventStore_Init();
 	
 	// Create example event
-	for (int i = 0 ; i < 12 ; i++) {
-		Event* event = EventStore_Create("Test event");
-		event->time = time(0) + rand() % (60 * 60 * 12);
-		event->color = rand() % 6 + 1;
-		EventStore_Add(event);
-	}
+	//for (int i = 0 ; i < 12 ; i++) {
+	//	Event* event = EventStore_Create("Test event");
+	//	event->time = time(0) + rand() % (60 * 60 * 12);
+	//	event->color = rand() % 6 + 1;
+	//	EventStore_Add(event);
+	//}
 	
 	// Load event monitor services
 	BatteryEvents_Init();
