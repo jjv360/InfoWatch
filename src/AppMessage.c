@@ -15,12 +15,40 @@
 
 #define ACTION_REMOVE_ID	0
 #define ACTION_ADD_EVENT	1
+#define ACTION_UPDATE_PING	2
+
+#define UPDATE_PING_INTERVAL	1000 * 60 * 60
+
+static AppTimer* pingTimer = 0;
 
 void AppMessage_Init() {
 	
 	// Connect to app message service
 	app_message_register_inbox_received(AppMessage_OnIncomingMessage);
 	app_message_open(app_message_inbox_size_maximum(), APP_MESSAGE_OUTBOX_SIZE_MINIMUM);
+	
+	// Start update ping
+	pingTimer = app_timer_register(UPDATE_PING_INTERVAL, AppMessage_OnUpdatePing, 0);
+	
+}
+
+/** Called when the update ping timer fires */
+void AppMessage_OnUpdatePing(void* data) {
+	
+	// Schedule another ping
+	pingTimer = app_timer_register(UPDATE_PING_INTERVAL, AppMessage_OnUpdatePing, 0);
+	
+	// Create app message to send
+	DictionaryIterator* dict = 0;
+	app_message_outbox_begin(&dict);
+	if (!dict)
+		return;
+	
+	// Write action
+	dict_write_uint8(dict, DICT_KEY_ACTION, ACTION_UPDATE_PING);
+	
+	// Send message
+	app_message_outbox_send();
 	
 }
 

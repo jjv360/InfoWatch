@@ -247,18 +247,32 @@ Event* EventStore_Next(Event* event) {
 // Get the GColor for a specified event color
 GColor EventStore_Color(int eventColor) {
 	
-	if (eventColor == EVENT_COLOR_GREEN)
-		return GColorGreen;
-	else if (eventColor == EVENT_COLOR_RED)
-		return GColorRed;
-	else if (eventColor == EVENT_COLOR_BLUE)
-		return GColorBlue;
-	else if (eventColor == EVENT_COLOR_BROWN)
-		return GColorBrass;
-	else if (eventColor == EVENT_COLOR_YELLOW)
-		return GColorYellow;
-	else
-		return GColorWhite;
+	// Check if got a color display
+	#if defined(PBL_COLOR)
+	
+		// Choose the right color
+		if (eventColor == EVENT_COLOR_GREEN)
+			return GColorGreen;
+		else if (eventColor == EVENT_COLOR_RED)
+			return GColorRed;
+		else if (eventColor == EVENT_COLOR_BLUE)
+			return GColorBlue;
+		else if (eventColor == EVENT_COLOR_BROWN)
+			return GColorBrass;
+		else if (eventColor == EVENT_COLOR_YELLOW)
+			return GColorYellow;
+		else
+			return GColorWhite;
+		
+	#else
+		
+		// Only black and white supported
+		if (eventColor == EVENT_COLOR_WHITE)
+			return GColorWhite;
+		else
+			return GColorLightGray;
+		
+	#endif
 	
 }
 
@@ -364,13 +378,6 @@ void EventStore_CopyRelativeTimeText(const Event* event, char* bfr, int length) 
 			snprintf(bfr, length, "%i minutes ago", numMins);
 		
 	}
-	
-	// Check if in the next hour
-	else if (now + 60 * 60 >= event->time) {
-		
-		
-		
-	} 
 	
 	// It starts in over an hour
 	else {

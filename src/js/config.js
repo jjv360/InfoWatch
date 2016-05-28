@@ -12,6 +12,98 @@ module.exports = [
 		"defaultValue": "A minimalist watchface that shows you information as it happens."
 	},
 	
+	/*{
+		"type": "section",
+		"items": [
+			
+			{
+				"type": "heading",
+				"defaultValue": "RSS Feed"
+			},
+			
+			{
+				"type": "color",
+				"label": "Feed Color 1",
+				"appKey": "rss-feed-color-1",
+				"defaultValue": "ff0000",
+				"layout": [
+					["ff0000", "00ff00", "0000ff"],
+					["ffffff", "aaaa55", "ffff00"]
+				]
+			},
+			
+			{
+				"type": "input",
+				"label": "Feed URL 1",
+				"appKey": "rss-feed-url-1",
+				"attributes": {
+					"type": "url"
+				}
+			},
+			
+			{
+				"type": "color",
+				"label": "Feed Color 2",
+				"appKey": "rss-feed-color-2",
+				"defaultValue": "00ff00",
+				"layout": [
+					["ff0000", "00ff00", "0000ff"],
+					["ffffff", "aaaa55", "ffff00"]
+				]
+			},
+			
+			{
+				"type": "input",
+				"label": "Feed URL 2",
+				"appKey": "rss-feed-url-2",
+				"attributes": {
+					"type": "url"
+				}
+			},
+			
+			{
+				"type": "color",
+				"label": "Feed Color 3",
+				"appKey": "rss-feed-color-3",
+				"defaultValue": "0000ff",
+				"layout": [
+					["ff0000", "00ff00", "0000ff"],
+					["ffffff", "aaaa55", "ffff00"]
+				]
+			},
+			
+			{
+				"type": "input",
+				"label": "Feed URL 3",
+				"appKey": "rss-feed-url-3",
+				"attributes": {
+					"type": "url"
+				}
+			},
+			
+			{
+				"type": "color",
+				"label": "Feed Color 4",
+				"appKey": "rss-feed-color-4",
+				"defaultValue": "aaaa55",
+				"layout": [
+					["ff0000", "00ff00", "0000ff"],
+					["ffffff", "aaaa55", "ffff00"]
+				]
+			},
+			
+			{
+				"type": "input",
+				"label": "Feed URL 4",
+				"appKey": "rss-feed-url-4",
+				"attributes": {
+					"type": "url"
+				}
+			}
+			
+		]
+	},*/
+	
 	{
 		"type": "section",
 		"items": [

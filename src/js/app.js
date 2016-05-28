@@ -5,8 +5,8 @@ var Settings = require("settings");
 // App startup
 Pebble.addEventListener("ready", function() {
 	
-	// Refresh weather
-	checkWeather();
+	// Refresh stuff
+	refresh();
 	
 });
 
@@ -14,9 +14,35 @@ Pebble.addEventListener("ready", function() {
 Settings.onUpdated = function() {
 	
 	// Refresh stuff
-	checkWeather();
+	refresh();
 	
 };
+
+/** Called when a message is received from the watch */
+Pebble.addEventListener("appmessage", function(e) {
+	
+	// Ignore if no payload
+	if (!e || !e.payload)
+		return;
+	
+	// Check action
+	if (e.payload.action == 2) {
+		
+		// Refresh
+		refresh();
+		
+	}
+	
+});
+
+
+/** Refresh event sources */
+function refresh() {
+	
+	// Refresh weather
+	checkWeather();
+	
+}
 
 
 /** Checks the weather */

@@ -175,6 +175,13 @@ void Watchface_DrawBackground(struct Layer *layer, GContext *ctx) {
 	
 	// Draw hour hand line if there are event dots drawn
 	if (didDrawEventDot) {
+		
+		// Set line color
+		#if defined(PBL_COLOR)
+			graphics_context_set_stroke_color(ctx, GColorRed);
+		#else
+			graphics_context_set_stroke_color(ctx, GColorWhite);
+		#endif
 	
 		// Find angle of minute hand line
 		int angle = (TRIG_MAX_ANGLE * now.tm_hour / 12) + (TRIG_MAX_ANGLE * now.tm_min / 60) / 12;
@@ -186,7 +193,6 @@ void Watchface_DrawBackground(struct Layer *layer, GContext *ctx) {
 	
 		// Draw line
 		graphics_context_set_antialiased(ctx, true);
-		graphics_context_set_stroke_color(ctx, GColorRed);
 		graphics_context_set_stroke_width(ctx, 2);
 		graphics_draw_line(ctx, outerPoint, innerPoint);
 		
