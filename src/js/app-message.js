@@ -28,7 +28,7 @@ function sendNext(retryData, retryCount) {
 	}
 	
 	// Send it
-	var data = retryData || queue.pop();
+	var data = retryData || queue.shift();
 	console.log("Sending app message (try " + (retryCount || 0) + "): " + JSON.stringify(data));
 	Pebble.sendAppMessage(data, function() {
 		

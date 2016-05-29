@@ -115,6 +115,14 @@ void EventStore_SaveTick(void* data) {
 	// Save
 	EventStore_Save();
 	
+	/* Log events
+	APP_LOG(APP_LOG_LEVEL_INFO, "Events: ");
+	Event* e = firstEvent;
+	while (e) {
+		APP_LOG(APP_LOG_LEVEL_INFO, "- (%u) %s at %u", e->eventID, e->name, (unsigned int) e->time);
+		e = e -> _next;
+	}*/
+	
 }
 
 // Purge old items from the event store
@@ -150,10 +158,21 @@ void EventStore_Remove(Event* event) {
 	// Check if there's a previous one
 	Event* prev = (Event*) event -> _prev;
 	Event* next = (Event*) event -> _next;
-	if (prev)
+	if (prev) {
+		
+		// Take this event out of the linked list
 		prev -> _next = next;
-	else
+		if (next)
+			next -> _prev = prev;
+		
+	} else {
+	
+		// This was the first event
 		firstEvent = next;
+		if (firstEvent)
+			firstEvent -> _prev = 0;
+		
+	}
 	
 	// Free memory
 	free(event);
