@@ -1,3 +1,4 @@
+var AppMessage = require("app-message");
 
 // Colors
 module.exports.Color = {
@@ -35,7 +36,7 @@ var ACTION_ADD_EVENT 	= 1;
 module.exports.removeID = function(id) {
 	
 	// Send msg to watch
-	Pebble.sendAppMessage({
+	AppMessage.send({
 		action: ACTION_DELETE_ID,
 		eventID: id
 	});
@@ -49,7 +50,7 @@ module.exports.add = function(event) {
 	console.log("Adding new event: " + event.name + " at " + event.time + " with duration " + event.duration);
 	
 	// Send msg to watch
-	Pebble.sendAppMessage({
+	AppMessage.send({
 		action: ACTION_ADD_EVENT,
 		eventID: event.id,
 		name: event.name,

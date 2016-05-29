@@ -1,4 +1,4 @@
-
+var Promise = require('es6-promise.js').Promise;
 
 /** Request a resource from a server */
 module.exports.get = function(url) {
@@ -6,7 +6,7 @@ module.exports.get = function(url) {
 	// Do a GET
 	return module.exports.do("GET", url, null, "text");
 	
-}
+};
 
 /** Request a resource from a server as JSON */
 module.exports.getJSON = function(url) {
@@ -14,7 +14,7 @@ module.exports.getJSON = function(url) {
 	// Do a GET
 	return module.exports.do("GET", url, null, "json");
 	
-}
+};
 
 /** Do a request with the specified method and data */
 module.exports.do = function(method, url, payload, responseType) {
@@ -51,8 +51,8 @@ module.exports.do = function(method, url, payload, responseType) {
 			console.log("Got data from " + url);
 			onSuccess(value);
 			
-		}
+		};
 		
 	});
 	
-}
+};

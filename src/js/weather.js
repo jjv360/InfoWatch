@@ -71,7 +71,7 @@ function getWeatherIn(location, latitude, longitude) {
 				pred.temperature = p.main.temp;
 				pred.temperatureMin = p.main.temp_min;
 				pred.temperatureMax = p.main.temp_max;
-				pred.name = p.weather[0].main;
+				pred.name = (p.weather[0].main || "").trim();
 				pred.description = p.weather[0].description;
 				pred.iconURL = "https://openweathermap.org/img/w/" + p.weather[0].icon + ".png";
 				info.predictions.push(pred);

@@ -104,7 +104,7 @@ module.exports = [
 		]
 	},*/
 	
-	{
+	/*{
 		"type": "section",
 		"items": [
 			
@@ -133,9 +133,79 @@ module.exports = [
 				"type": "input",
 				"label": "Password",
 				"appKey": "icloud-password",
+				"description": "If you use two-factor authentication, you will need to enter your App Specific Password here.",
 				"attributes": {
 					"type": "password"
 				}
+			}
+			
+		]
+	},*/
+	
+	/*{
+		"type": "section",
+		"items": [
+			
+			{
+				"type": "heading",
+				"defaultValue": "Google Calendar"
+			},
+			
+			{
+				"type": "toggle",
+				"label": "Enabled",
+				"appKey": "gcal-enabled",
+				"defaultValue": false
+			},
+			
+			{
+				"type": "input",
+				"label": "Email",
+				"appKey": "gcal-email",
+				"attributes": {
+					"type": "email"
+				}
+			},
+			
+			{
+				"type": "input",
+				"label": "Password",
+				"appKey": "gcal-password",
+				"description": "If you use two-factor authentication, you will need to enter your App Specific Password here.",
+				"attributes": {
+					"type": "password"
+				}
+			}
+			
+		]
+	},*/
+	
+	{
+		"type": "section",
+		"items": [
+			
+			{
+				"type": "heading",
+				"defaultValue": "vCalendar"
+			},
+			
+			{
+				"type": "toggle",
+				"label": "Enabled",
+				"appKey": "vcal-enabled",
+				"defaultValue": false
+			},
+			
+			{
+				"type": "input",
+				"label": "URLs",
+				"appKey": "vcal-urls",
+				"description": "Here you can enter a space-separated list of vCalendar URLs."
+			},
+			
+			{
+				"type": "text",
+				"defaultValue": "<h4>iCloud:</h4>To connect to an iCloud calendar, go to the Calendar app, open the calendar info (i), make it a Public Calendar, press Share Link and then copy the link into here.<br/><br/><h4>Google Calendar:</h4>To connect to a Google Calendar, open calendar.google.com on your PC, go to settings, go to the Calendars tab, click a calendar and then copy the Private Address into here."
 			}
 			
 		]

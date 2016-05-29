@@ -52,6 +52,7 @@ Event* 	EventStore_First();
 Event* 	EventStore_Next(Event* event);
 void 	EventStore_Remove(Event* e);
 void	EventStore_RemoveID(int id);
+void	EventStore_RemoveFurthest();
 Event*	EventStore_Current();
 
 GColor 	EventStore_Color(int eventColor);

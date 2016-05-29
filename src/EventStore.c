@@ -188,6 +188,29 @@ void EventStore_RemoveID(int id) {
 	
 }
 
+// Remove the furthest entry
+void EventStore_RemoveFurthest() {
+	
+	// Find furthest entry
+	Event* e = firstEvent;
+	Event* oldest = firstEvent;
+	while (e) {
+		
+		// Check date
+		if (oldest->time < e->time)
+			oldest = e;
+		
+		// Move on
+		e = e -> _next;
+		
+	}
+	
+	// Remove it if found
+	if (oldest)
+		EventStore_Remove(oldest);
+	
+}
+
 // Create a new event
 Event* EventStore_Create(char* name) {
 	
@@ -220,9 +243,9 @@ void EventStore_Add(Event* event) {
 	// Remove other events with this event ID
 	EventStore_RemoveID(event->eventID);
 	
-	// Check if we have space
-	if (EventStore_Count() >= MAX_EVENTS)
-		return;
+	// Make space
+	while (EventStore_Count() >= MAX_EVENTS)
+		EventStore_RemoveFurthest();
 	
 	// Get last event
 	Event* lastEvent = firstEvent;
@@ -242,8 +265,6 @@ void EventStore_Add(Event* event) {
 		firstEvent = event;
 		
 	}
-	
-	APP_LOG(APP_LOG_LEVEL_INFO, "Adding event %s at %u", event->name, (unsigned int) event->time);
 	
 	// Update UI
 	Watchface_Refresh();
