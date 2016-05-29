@@ -88,6 +88,29 @@ void EventStore_Save() {
 	
 }
 
+// Save soon. This is used to collapse multiple save requests within a second into one save request
+static AppTimer* saveTimer = 0;
+void EventStore_SaveSoon() {
+	
+	// Reschedule old save timer or create a new one
+	if (saveTimer)
+		app_timer_reschedule(saveTimer, 1000);
+	else
+		saveTimer = app_timer_register(1000, EventStore_SaveTick, 0);
+	
+}
+
+// Called when the save timer executes
+void EventStore_SaveTick(void* data) {
+	
+	// Clear save timer
+	saveTimer = 0;
+	
+	// Save
+	EventStore_Save();
+	
+}
+
 // Purge old items from the event store
 void EventStore_Purge() {
 	
@@ -131,6 +154,9 @@ void EventStore_Remove(Event* event) {
 	
 	// Update UI
 	Watchface_Refresh();
+	
+	// Save soon
+	EventStore_SaveSoon();
 	
 }
 
@@ -215,6 +241,9 @@ void EventStore_Add(Event* event) {
 	
 	// Update UI
 	Watchface_Refresh();
+	
+	// Save soon
+	EventStore_SaveSoon();
 	
 }
 

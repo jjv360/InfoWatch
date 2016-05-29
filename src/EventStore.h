@@ -41,6 +41,8 @@ typedef struct {
 
 void 	EventStore_Init();
 void 	EventStore_Save();
+void	EventStore_SaveSoon();
+void	EventStore_SaveTick(void* data);
 void 	EventStore_Purge();
 
 Event* 	EventStore_Create(char* name);
