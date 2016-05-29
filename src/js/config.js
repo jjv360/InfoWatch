@@ -110,6 +110,43 @@ module.exports = [
 			
 			{
 				"type": "heading",
+				"defaultValue": "iCloud Calendar"
+			},
+			
+			{
+				"type": "toggle",
+				"label": "Enabled",
+				"appKey": "icloud-enabled",
+				"defaultValue": false
+			},
+			
+			{
+				"type": "input",
+				"label": "Email",
+				"appKey": "icloud-email",
+				"attributes": {
+					"type": "email"
+				}
+			},
+			
+			{
+				"type": "input",
+				"label": "Password",
+				"appKey": "icloud-password",
+				"attributes": {
+					"type": "password"
+				}
+			}
+			
+		]
+	},
+	
+	{
+		"type": "section",
+		"items": [
+			
+			{
+				"type": "heading",
 				"defaultValue": "Weather"
 			},
 			

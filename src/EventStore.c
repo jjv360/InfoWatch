@@ -14,6 +14,8 @@
 #define KEY_OFFSET_EVENT_HIDDEN			0x03
 #define KEY_OFFSET_EVENT_DURATION		0x04
 #define KEY_OFFSET_EVENT_SUBTITLE		0x05
+#define KEY_OFFSET_EVENT_TYPE			0x06
+#define KEY_OFFSET_EVENT_ID				0x07
 
 #define MAX_EVENTS						40
 
@@ -42,6 +44,8 @@ void EventStore_Init() {
 		e->duration = persist_read_int(keyOffset + KEY_OFFSET_EVENT_DURATION);
 		e->color = persist_read_int(keyOffset + KEY_OFFSET_EVENT_COLOR);
 		e->hidden = persist_read_bool(keyOffset + KEY_OFFSET_EVENT_HIDDEN);
+		e->type = persist_read_int(keyOffset + KEY_OFFSET_EVENT_TYPE);
+		e->eventID = persist_read_int(keyOffset + KEY_OFFSET_EVENT_ID);
 		
 		// Add it
 		EventStore_Add(e);
@@ -77,6 +81,8 @@ void EventStore_Save() {
 		persist_write_int(keyOffset + KEY_OFFSET_EVENT_DURATION, event->duration);
 		persist_write_int(keyOffset + KEY_OFFSET_EVENT_COLOR, event->color);
 		persist_write_bool(keyOffset + KEY_OFFSET_EVENT_HIDDEN, event->hidden);
+		persist_write_int(keyOffset + KEY_OFFSET_EVENT_TYPE, event->type);
+		persist_write_int(keyOffset + KEY_OFFSET_EVENT_ID, event->eventID);
 		
 		// Increase count
 		numEvents++;
