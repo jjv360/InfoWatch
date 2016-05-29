@@ -328,66 +328,16 @@ void EventStore_CopyRelativeTimeText(const Event* event, char* bfr, int length) 
 	if (!event)
 		return;
 	
-	// Check if inside event
+	// Check if in the future
 	time_t now = time(0);
-	if (now + 60 * 60 * 24 >= event->time && now + 60 * 60 * 24 <= event->time + event->duration) {
+	if (now < event->time) {
 		
-		// Show ending time
-		int numDays = round(((double) event->time + event->duration - now) / 60 / 60 / 24);
-		if (numDays == 1)
-			snprintf(bfr, length, "Ends in one day");
-		else
-			snprintf(bfr, length, "Ends in %i days", numDays);
-		
-	}
-	
-	else if (now + 60 * 60 >= event->time && now + 60 * 60 <= event->time + event->duration) {
-		
-		// Show ending time
-		int numHours = round(((double)event->time + event->duration - now) / 60 / 60);
-		if (numHours == 1)
-			snprintf(bfr, length, "Ends in one hour");
-		else
-			snprintf(bfr, length, "Ends in %i hours", numHours);
-		
-	}
-	
-	else if (now >= event->time && now <= event->time + event->duration) {
-		
-		// Show ending time
-		int numMins = round(((double) event->time + event->duration - now) / 60);
-		if (numMins == 0)
-			snprintf(bfr, length, event->duration == 0 ? "Now" : "Just ended");
-		else if (numMins == 1)
-			snprintf(bfr, length, "Ends in one minute");
-		else
-			snprintf(bfr, length, "Ends in %i minutes", numMins);
-		
-	}
-	
-	// Check if in the past
-	else if (now > event->time + event->duration) {
-		
-		// Show ended time
-		int numMins = (now - (event->time + event->duration)) / 60;
-		if (numMins == 0)
-			snprintf(bfr, length, event->duration == 0 ? "Now" : "Just ended");
-		else if (numMins == 1)
-			snprintf(bfr, length, "One minute ago");
-		else
-			snprintf(bfr, length, "%i minutes ago", numMins);
-		
-	}
-	
-	// It starts in over an hour
-	else {
-		
-		// Get delay
+		// In the future, get delay
 		int delay = (event->time) - now;
 		if (delay < 60 * 60) {
 			
 			// Show time
-			int numMins = delay / 60;
+			int numMins = round((double) delay / 60);
 			if (numMins == 0)
 				snprintf(bfr, length, "Now");
 			else if (numMins == 1)
@@ -398,7 +348,7 @@ void EventStore_CopyRelativeTimeText(const Event* event, char* bfr, int length) 
 		} else if (delay < 60 * 60 * 24) {
 			
 			// Show time in hours
-			int numHours = ((event->time) - now) / 60 / 60;
+			int numHours = round((double) delay / 60 / 60);
 			if (numHours == 1)
 				snprintf(bfr, length, "In one hour");
 			else
@@ -407,11 +357,81 @@ void EventStore_CopyRelativeTimeText(const Event* event, char* bfr, int length) 
 		} else {
 		
 			// Show time in days
-			int numDays = ((event->time) - now) / 60 / 60 / 24;
+			int numDays = round((double) delay / 60 / 60 / 24);
 			if (numDays == 1)
 				snprintf(bfr, length, "In one day");
 			else
 				snprintf(bfr, length, "In %i days", numDays);
+			
+		}
+		
+	} else if (now >= event->time && now < event->time + event->duration) {
+		
+		// Currently inside the event, get delay
+		int delay = (event->time + event->duration) - now;
+		if (delay < 60 * 60) {
+			
+			// Show time
+			int numMins = round((double) delay / 60);
+			if (numMins == 0)
+				snprintf(bfr, length, "Just ended");
+			else if (numMins == 1)
+				snprintf(bfr, length, "Ends in one minute");
+			else
+				snprintf(bfr, length, "Ends in %i minutes", numMins);
+			
+		} else if (delay < 60 * 60 * 24) {
+			
+			// Show time in hours
+			int numHours = round((double) delay / 60 / 60);
+			if (numHours == 1)
+				snprintf(bfr, length, "Ends in one hour");
+			else
+				snprintf(bfr, length, "Ends in %i hours", numHours);
+			
+		} else {
+		
+			// Show time in days
+			int numDays = round((double) delay / 60 / 60 / 24);
+			if (numDays == 1)
+				snprintf(bfr, length, "Ends in one day");
+			else
+				snprintf(bfr, length, "Ends in %i days", numDays);
+			
+		}
+		
+	} else {
+		
+		// In the past, get delay
+		int delay = now - (event->time + event->duration);
+		if (delay < 60 * 60) {
+			
+			// Show time
+			int numMins = round((double) delay / 60);
+			if (numMins == 0)
+				snprintf(bfr, length, "Now");
+			else if (numMins == 1)
+				snprintf(bfr, length, "One minute ago");
+			else
+				snprintf(bfr, length, "%i minutes ago", numMins);
+			
+		} else if (delay < 60 * 60 * 24) {
+			
+			// Show time in hours
+			int numHours = round((double) delay / 60 / 60);
+			if (numHours == 1)
+				snprintf(bfr, length, "One hour ago");
+			else
+				snprintf(bfr, length, "%i hours ago", numHours);
+			
+		} else {
+		
+			// Show time in days
+			int numDays = round((double) delay / 60 / 60 / 24);
+			if (numDays == 1)
+				snprintf(bfr, length, "One day ago");
+			else
+				snprintf(bfr, length, "%i days ago", numDays);
 			
 		}
 		

@@ -80,6 +80,10 @@ function checkWeather() {
 			if (weather.predictions[i].isNormal)
 				continue;
 			
+			// Ignore rain if needed
+			if (weather.predictions[i].isRain && !Settings.getSetting("weather-rain-enabled"))
+				continue;
+			
 			// Use this item
 			weatherStart = weather.predictions[i];
 			

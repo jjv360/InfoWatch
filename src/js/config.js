@@ -126,6 +126,13 @@ module.exports = [
 			},
 			
 			{
+				"type": "toggle",
+				"label": "Rain Events",
+				"appKey": "weather-rain-enabled",
+				"defaultValue": true
+			},
+			
+			{
 				"type": "input",
 				"label": "Location",
 				"appKey": "weather-location",
