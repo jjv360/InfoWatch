@@ -167,6 +167,10 @@ function checkvCal() {
 	// Remove old error events
 	EventStore.removeID(EVENT_VCAL_ERROR);
 	
+	// Check if enabled
+	if (!Settings.getSetting("vcal-enabled"))
+		return;
+	
 	// Split URLs
 	var urlStr = Settings.getSetting("vcal-urls") || "";
 	var urls = urlStr.split(" ");
@@ -183,6 +187,10 @@ function checkvCalURL(url) {
 	// Fix webcal:// urls
 	if (url.indexOf("webcal:") === 0)
 		url = "http:" + url.substring(7);
+	
+	// Ignore if no URL
+	if (!url.trim())
+		return;
 	
 	// Fetch data
 	Request.get(url).then(function(vCalStr) {

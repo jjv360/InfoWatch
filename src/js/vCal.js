@@ -162,27 +162,34 @@ Event.prototype.nextRecurrence = function() {
 	
 	// Check for a recurrence rule
 	if (!this.recurrenceRule)
-		return;
+		return null;
 	
-	// Get rule
-	var options = RRule.parseString(this.recurrenceRule);
-	options.dtstart = new Date(this.time);
-	var rule = new RRule(options);
+	// Catch errors
+	try {
 	
-	// Get next recurrence
-	var next = rule.after(new Date());
-	if (!next)
-		return;
-	
-	// Create new event
-	var event = new Event();
-	event.time = next.getTime();
-	event.name = this.name;
-	event.description = this.description;
-	event.endTime = event.time + this.duration;
-	event.location = this.location;
-	event.uid = this.uid;
-	event.recurrenceOf = this;
-	return event;
+		// Get rule
+		var options = RRule.parseString(this.recurrenceRule);
+		options.dtstart = new Date(this.time);
+		var rule = new RRule(options);
+
+		// Get next recurrence
+		var next = rule.after(new Date());
+		if (!next)
+			return;
+
+		// Create new event
+		var event = new Event();
+		event.time = next.getTime();
+		event.name = this.name;
+		event.description = this.description;
+		event.endTime = event.time + this.duration;
+		event.location = this.location;
+		event.uid = this.uid;
+		event.recurrenceOf = this;
+		return event;
+		
+	} catch (e) {
+		return null;
+	}
 	
 };
