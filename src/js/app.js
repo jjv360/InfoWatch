@@ -233,20 +233,8 @@ function checkvCalURL(url) {
 		
 	}).catch(function(err) {
 		
-		// Get error
-		var msg = err.message || "Unknown error";
-		
-		// Show error
-		var event = new EventStore.Event(EVENT_VCAL_ERROR);
-		event.name = "vCal error";
-		event.subtitle = msg;
-		event.time = Date.now();
-		event.duration = 1000 * 60 * 2;
-		event.color = EventStore.Color.Red;
-		event.type = EventStore.Type.Warning;
-		event.hidden = true;
-		event.noSave = true;
-		EventStore.add(event);
+		// Log error
+		console.warn("vCal error: " + (err.message || "Unknown error"));
 		
 	});
 	

@@ -29,26 +29,8 @@
                 "type": "raw"
             },
             {
-                "file": "data/Cloudy.pdc",
-                "name": "IMAGE_CLOUDY",
-                "targetPlatforms": null,
-                "type": "raw"
-            },
-            {
                 "file": "data/Snow.pdc",
                 "name": "IMAGE_SNOW",
-                "targetPlatforms": null,
-                "type": "raw"
-            },
-            {
-                "file": "data/Rain.pdc",
-                "name": "IMAGE_RAIN",
-                "targetPlatforms": null,
-                "type": "raw"
-            },
-            {
-                "file": "data/ScheduledEvent.pdc",
-                "name": "IMAGE_EVENT",
                 "targetPlatforms": null,
                 "type": "raw"
             },
@@ -65,26 +47,26 @@
                 "type": "raw"
             },
             {
-                "file": "data/BatteryCharging.pdc",
-                "name": "IMAGE_BATTERY_CHARGING",
+                "file": "data/ScheduledEvent.pdc",
+                "name": "IMAGE_EVENT",
                 "targetPlatforms": null,
                 "type": "raw"
             },
             {
-                "file": "data/Battery.pdc",
-                "name": "IMAGE_BATTERY",
+                "file": "data/Rain.pdc",
+                "name": "IMAGE_RAIN",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
+            {
+                "file": "data/GenericWarning.pdc",
+                "name": "IMAGE_GENERIC_WARNING",
                 "targetPlatforms": null,
                 "type": "raw"
             },
             {
                 "file": "data/GenericPin.pdc",
                 "name": "IMAGE_GENERIC_PIN",
-                "targetPlatforms": null,
-                "type": "raw"
-            },
-            {
-                "file": "data/GenericConfirmation.pdc",
-                "name": "IMAGE_GENERIC_CONFIRMATION",
                 "targetPlatforms": null,
                 "type": "raw"
             },
@@ -101,8 +83,26 @@
                 "type": "raw"
             },
             {
-                "file": "data/GenericWarning.pdc",
-                "name": "IMAGE_GENERIC_WARNING",
+                "file": "data/GenericConfirmation.pdc",
+                "name": "IMAGE_GENERIC_CONFIRMATION",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
+            {
+                "file": "data/Cloudy.pdc",
+                "name": "IMAGE_CLOUDY",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
+            {
+                "file": "data/BatteryCharging.pdc",
+                "name": "IMAGE_BATTERY_CHARGING",
+                "targetPlatforms": null,
+                "type": "raw"
+            },
+            {
+                "file": "data/Battery.pdc",
+                "name": "IMAGE_BATTERY",
                 "targetPlatforms": null,
                 "type": "raw"
             }

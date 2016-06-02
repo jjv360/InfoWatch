@@ -52,23 +52,23 @@ module.exports.parse = function(str) {
 				
 			}
 			
-		} else if (line.indexOf("SUMMARY:") === 0 && context[context.length-1] == "VEVENT") {
+		} else if (line.indexOf("SUMMARY") === 0 && context[context.length-1] == "VEVENT") {
 			
 			// Store info
 			if (currentEvent)
-				currentEvent.name = line.substring(8).trim();
+				currentEvent.name = line.substring(line.indexOf(":")+1).trim();
 			
-		} else if (line.indexOf("DESCRIPTION:") === 0 && context[context.length-1] == "VEVENT") {
-			
-			// Store info
-			if (currentEvent)
-				currentEvent.description = line.substring(12).trim();
-			
-		} else if (line.indexOf("LOCATION:") === 0 && context[context.length-1] == "VEVENT") {
+		} else if (line.indexOf("DESCRIPTION") === 0 && context[context.length-1] == "VEVENT") {
 			
 			// Store info
 			if (currentEvent)
-				currentEvent.location = line.substring(9).trim();
+				currentEvent.description = line.substring(line.indexOf(":")+1).trim();
+			
+		} else if (line.indexOf("LOCATION") === 0 && context[context.length-1] == "VEVENT") {
+			
+			// Store info
+			if (currentEvent)
+				currentEvent.location = line.substring(line.indexOf(":")+1).trim();
 			
 		} else if (line.indexOf("DTSTART") === 0 && context[context.length-1] == "VEVENT") {
 			
@@ -86,13 +86,13 @@ module.exports.parse = function(str) {
 			
 			// Store info
 			if (currentEvent)
-				currentEvent.uid = line.substring(4).trim();
+				currentEvent.uid = line.substring(line.indexOf(":")+1).trim();
 			
 		} else if (line.indexOf("RRULE:") === 0 && context[context.length-1] == "VEVENT") {
 			
 			// Store info
 			if (currentEvent)
-				currentEvent.recurrenceRule = line.substring(6).trim();
+				currentEvent.recurrenceRule = line.substring(line.indexOf(":")+1).trim();
 			
 		}
 		
