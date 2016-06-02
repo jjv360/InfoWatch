@@ -265,6 +265,28 @@ module.exports = [
 	{
 		"type": "submit",
 		"defaultValue": "Save"
-	}
+	},
+	
+	{
+		"type": "section",
+		"items": [
+			
+			{
+				"type": "heading",
+				"defaultValue": "FAQs"
+			},
+			
+			{
+				"type": "text",
+				"defaultValue": "<h5>What is the red line?</h5><h6 style='color: #a4a4a4; '>The red line is the current hour hand. It only appears when there is an upcoming event in the next 12 hours.</h6>",
+			},
+			
+			{
+				"type": "text",
+				"defaultValue": "<h5>What are the dots around the edge of the screen?</h5><h6 style='color: #a4a4a4; '>The dots represent events in the next 12 hours. When the hour hand reaches a dot, that event starts.</h6>",
+			},
+			
+		]
+	},
 	
 ];
