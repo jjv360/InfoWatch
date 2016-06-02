@@ -11,7 +11,8 @@
         "showEventDots": 41,
         "subtitle": 8,
         "time": 2,
-        "type": 4
+        "type": 4,
+        "vibrateOnNewEvent": 42
     },
     "capabilities": [
         "location",

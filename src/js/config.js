@@ -24,7 +24,7 @@ module.exports = [
 			{
 				"type": "select",
 				"appKey": "hourHandMode",
-				"label": "Hour Hand",
+				"label": "Hour hand",
 				"defaultValue": 0,
 				"description": "If set to Automatic, the hour hand will only be visible if there is an event in the next 12 hours.",
 				"options": [
@@ -37,9 +37,17 @@ module.exports = [
 			{
 				"type": "toggle",
 				"appKey": "showEventDots",
-				"label": "Event Dots",
+				"label": "Event dots",
 				"defaultValue": true,
 				"description": "Display event dots for the next 12 hours around the edge of the screen."
+			},
+			
+			{
+				"type": "toggle",
+				"appKey": "vibrateOnNewEvent",
+				"label": "Vibrate on new event",
+				"defaultValue": false,
+				"description": "If enabled, will vibrate when the upcoming event changes."
 			}
 			
 		]

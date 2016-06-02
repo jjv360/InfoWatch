@@ -10,10 +10,15 @@ static char timeLblBuffer[128] = {0};
 
 static GColor backgroundColor = {0};
 static struct tm now = {0};
+static unsigned int lastEventID = 0;
 
 
 // Set up the window
 void Watchface_Init() {
+	
+	// Fetch current event ID, to prevent vibrate on app launch
+	Event* currentEvent = EventStore_Current();
+	lastEventID = (currentEvent ? currentEvent -> eventID : 0);
 	
 	// Set defaults
 	backgroundColor = GColorBlack;
@@ -266,6 +271,23 @@ void Watchface_DrawBackground(struct Layer *layer, GContext *ctx) {
 		graphics_context_set_text_color(ctx, GColorDarkGray);
 		graphics_draw_text(ctx, bfr, Resources.fonts.logo, GRect(0, bounds.size.h / 4 - textSize.h / 2, bounds.size.w, textSize.h), GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, 0);
 		
+	}
+	
+	// Check if event changed
+	unsigned int newEventID = (currentEvent ? currentEvent -> eventID : 0);
+	if (lastEventID != newEventID) {
+			
+		// Store the change
+		lastEventID = newEventID;
+		
+		// Check if should vibrate
+		if (Settings_Get(SETTING_VIBRATE_ON_NEW_EVENT, 0)) {
+			
+			// Do a quick vibrate
+			vibes_short_pulse();
+			
+		}
+			
 	}
 	
 	// Get size of time text

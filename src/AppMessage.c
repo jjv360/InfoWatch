@@ -135,4 +135,9 @@ void AppMessage_OnIncomingMessage(DictionaryIterator* iterator, void *context) {
 	if (tuple)
 		Settings_Set(SETTING_SHOW_EVENT_DOTS, tuple->value->int32);
 	
+	// Update vibrate on new event setting
+	tuple = dict_find(iterator, SETTING_VIBRATE_ON_NEW_EVENT);
+	if (tuple)
+		Settings_Set(SETTING_VIBRATE_ON_NEW_EVENT, tuple->value->int32);
+	
 }
