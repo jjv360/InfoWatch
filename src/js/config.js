@@ -12,6 +12,40 @@ module.exports = [
 		"defaultValue": "A minimalist watchface that shows you information as it happens."
 	},
 	
+	{
+		"type": "section",
+		"items": [
+			
+			{
+				"type": "heading",
+				"defaultValue": "General"
+			},
+			
+			{
+				"type": "select",
+				"appKey": "hourHandMode",
+				"label": "Hour Hand",
+				"defaultValue": 0,
+				"description": "If set to Automatic, the hour hand will only be visible if there is an event in the next 12 hours.",
+				"options": [
+					{"value": "auto", "label": "Automatic"},
+					{"value": "on", "label": "Visible"},
+					{"value": "off", "label": "Hidden"}
+				]
+			},
+			
+			{
+				"type": "toggle",
+				"appKey": "showEventDots",
+				"label": "Event Dots",
+				"defaultValue": true,
+				"description": "Display event dots for the next 12 hours around the edge of the screen."
+			}
+			
+		]
+		
+	},
+	
 	/*{
 		"type": "section",
 		"items": [

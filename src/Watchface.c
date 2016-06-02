@@ -3,6 +3,7 @@
 #include "MathUtil.h"
 #include "EventStore.h"
 #include "Resources.h"
+#include "Settings.h"
 
 static Window* window = 0;
 static char timeLblBuffer[128] = {0};
@@ -150,6 +151,10 @@ void Watchface_DrawBackground(struct Layer *layer, GContext *ctx) {
 	// Purge old events
 	EventStore_Purge();
 	
+	// Get settings
+	int hourHandSetting = Settings_Get(SETTING_HOUR_HAND_MODE, 0);
+	int eventDotEnabled = Settings_Get(SETTING_SHOW_EVENT_DOTS, 1);
+	
 	// Draw events around the circle
 	int pointOffset = 4;
 	time_t ignoreBefore = time(0) - 60 * 10;
@@ -157,6 +162,14 @@ void Watchface_DrawBackground(struct Layer *layer, GContext *ctx) {
 	Event* e = EventStore_First();
 	bool didDrawEventDot = false;
 	while (e) {
+		
+		// Stop if disabled
+		if (!eventDotEnabled)
+			break;
+		
+		// Stop if not showing hour hand
+		if (hourHandSetting == 2)
+			break;
 		
 		// Get event
 		Event* event = e;
@@ -195,7 +208,11 @@ void Watchface_DrawBackground(struct Layer *layer, GContext *ctx) {
 	}
 	
 	// Draw hour hand line if there are event dots drawn
-	if (didDrawEventDot) {
+	if (hourHandSetting == 2) {
+		
+		// Hour hand disabled
+		
+	} else if ((hourHandSetting == 0 && didDrawEventDot) || (hourHandSetting == 1)) {
 		
 		// Set line color
 		#if defined(PBL_COLOR)

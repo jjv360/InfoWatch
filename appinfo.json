@@ -5,8 +5,10 @@
         "duration": 9,
         "eventID": 1,
         "hidden": 5,
+        "hourHandMode": 40,
         "name": 7,
         "noSave": 6,
+        "showEventDots": 41,
         "subtitle": 8,
         "time": 2,
         "type": 4

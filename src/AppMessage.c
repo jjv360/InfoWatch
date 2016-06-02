@@ -1,6 +1,7 @@
 #include <pebble.h>
 #include "AppMessage.h"
 #include "EventStore.h"
+#include "Settings.h"
 
 #define DICT_KEY_ACTION		0
 #define DICT_KEY_EVENTID	1
@@ -119,5 +120,19 @@ void AppMessage_OnIncomingMessage(DictionaryIterator* iterator, void *context) {
 		EventStore_Add(event);
 		
 	}
+	
+	// Update hour hand setting
+	tuple = dict_find(iterator, SETTING_HOUR_HAND_MODE);
+	if (tuple && strcmp(tuple->value->cstring, "auto") == 0)
+		Settings_Set(SETTING_HOUR_HAND_MODE, 0);
+	else if (tuple && strcmp(tuple->value->cstring, "on") == 0)
+		Settings_Set(SETTING_HOUR_HAND_MODE, 1);
+	else if (tuple && strcmp(tuple->value->cstring, "off") == 0)
+		Settings_Set(SETTING_HOUR_HAND_MODE, 2);
+	
+	// Update event dot setting
+	tuple = dict_find(iterator, SETTING_SHOW_EVENT_DOTS);
+	if (tuple)
+		Settings_Set(SETTING_SHOW_EVENT_DOTS, tuple->value->int32);
 	
 }
